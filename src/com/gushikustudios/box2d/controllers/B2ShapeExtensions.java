@@ -264,7 +264,7 @@ public class B2ShapeExtensions
          area += triangleArea;
 
          // Area weighted centroid
-         tmp.set(p1).add(p2).add(p3).mul(triangleArea * inv3);
+         tmp.set(p1).add(p2).add(p3).scl(triangleArea * inv3);
          c.add(tmp);
 
       }
@@ -274,7 +274,7 @@ public class B2ShapeExtensions
          area = 0.25f; // punt.  Instead of throwing an exception, return a minimum.
       }
       // Centroid
-      c.mul(1.0f / area);
+      c.scl(1.0f / area);
       
       return area;
    }

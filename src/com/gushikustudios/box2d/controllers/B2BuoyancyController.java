@@ -1,7 +1,5 @@
 package com.gushikustudios.box2d.controllers;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.ChainShape;
@@ -10,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * The buoyancy calculations originated from wck which in turn came from Boris the Brave's work. iforce2d has an
@@ -159,12 +158,12 @@ public class B2BuoyancyController extends B2Controller
       }
       
       // buoyancy force.
-      mTmp.set(mGravity).mul(-mFluidDensity * area);
-      body.applyForce(mTmp, mMassc); // multiply by -density to invert gravity
+      mTmp.set(mGravity).scl(-mFluidDensity * area);
+      body.applyForce(mTmp, mMassc, true); // multiply by -density to invert gravity
       
       // linear drag.
-      mTmp.set(body.getLinearVelocityFromWorldPoint(mAreac).sub(mFluidVelocity).mul(-mLinearDrag * area));
-      body.applyForce(mTmp, mAreac);
+      mTmp.set(body.getLinearVelocityFromWorldPoint(mAreac).sub(mFluidVelocity).scl(-mLinearDrag * area));
+      body.applyForce(mTmp, mAreac, true);
       
       // angular drag.
       float bodyMass = body.getMass();
@@ -173,7 +172,7 @@ public class B2BuoyancyController extends B2Controller
          bodyMass = 1;
       }
       float torque = -body.getInertia() / bodyMass * area * body.getAngularVelocity() * mAngularDrag;
-      body.applyTorque(torque);
+      body.applyTorque(torque,true);
       return true;
    }
 
@@ -184,8 +183,8 @@ public class B2BuoyancyController extends B2Controller
       {
          for (int i = 0; i < m_bodyList.size; i++)
          {
-            ArrayList<Fixture> fixtureList = m_bodyList.get(i).getFixtureList();
-            for (int j = 0; j < fixtureList.size(); j++)
+            Array<Fixture> fixtureList = m_bodyList.get(i).getFixtureList();
+            for (int j = 0; j < fixtureList.size; j++)
             {
                ApplyToFixture(fixtureList.get(j));
             }
